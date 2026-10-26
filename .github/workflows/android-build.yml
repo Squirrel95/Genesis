@@ -2,6 +2,8 @@ name: Genesis Android APK
 on:
   push:
     branches: [main, 'feature/ascension-interface-rebuild']
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 jobs:
   build:
