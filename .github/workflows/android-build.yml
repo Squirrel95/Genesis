@@ -1,4 +1,5 @@
 name: Genesis Android APK
+# Permanent release signing validation run; secrets are never committed to source.
 on:
   push:
     branches: [main, 'feature/ascension-interface-rebuild']
