@@ -7,3 +7,8 @@ html{background:#030705}body{background:radial-gradient(ellipse at 50% -20%,#173
 @media(min-width:900px){.hq-main{grid-template-columns:minmax(0,1.65fr) minmax(340px,1fr)}.hq-core{min-height:710px}.reactor{height:560px;width:360px;margin-top:78px}.hq-actions{grid-template-columns:repeat(2,1fr)}.hq-sidebar{grid-template-rows:auto auto auto}.reactor-name{bottom:46px}.hq-overline{font-size:12px}}
 @media(min-width:1400px){.hq{grid-template-columns:1fr}.hq-main{grid-template-columns:minmax(0,1.6fr) minmax(390px,1fr)}.hq-core{min-height:760px}}
 @media(prefers-reduced-motion:reduce){.fluid,.bubble,.acorn{animation:none!important}}body.low .fluid,body.low .bubble,body.low .acorn{animation:none!important}
+
+/* Acorns are dimensional CSS shapes rather than font symbols. */
+.acorn{width:var(--s);height:calc(var(--s) * 1.16);border-radius:48% 48% 50% 50%;background:radial-gradient(circle at 30% 25%,#f7d9a2,#9b5e29 50%,#3c240f 90%);border:1px solid #c39455;box-shadow:inset -4px -4px 8px #271507a6,2px 4px 10px #001b0c9c}
+.acorn:before{content:"";position:absolute;left:-9%;right:-9%;top:-6%;height:32%;border-radius:55% 55% 30% 30%;background:repeating-linear-gradient(135deg,#4b3018 0 3px,#9b7442 3px 6px);border:1px solid #c29c60}
+.acorn:after{content:"";position:absolute;left:46%;top:-18%;width:3px;height:8px;border-radius:3px;background:#7d552c}
