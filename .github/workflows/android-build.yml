@@ -1,7 +1,7 @@
 name: Genesis Android APK
 on:
   push:
-    branches: [main]
+    branches: [main, feature/genesis-integrated-rebuild]
   workflow_dispatch:
 jobs:
   build:
