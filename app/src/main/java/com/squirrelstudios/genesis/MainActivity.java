@@ -17,6 +17,6 @@ public class MainActivity extends Activity {
   setContentView(web);
  }
  @Override public void onBackPressed() {
-  if (web.canGoBack()) web.goBack(); else super.onBackPressed();
+  web.evaluateJavascript("(window.genesisBack && window.genesisBack()) ? true : false", value -> { if (!"true".equals(value)) runOnUiThread(() -> { if (web.canGoBack()) web.goBack(); else finish(); }); });
  }
 }
