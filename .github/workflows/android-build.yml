@@ -1,7 +1,7 @@
 name: Genesis Android APK
 on:
   push:
-    branches: [main]
+    branches: [main, feature/genesis-reactor-hq-v04]
   workflow_dispatch:
 jobs:
   build:
@@ -23,6 +23,35 @@ jobs:
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
       - name: Build installable debug APK
         run: gradle --no-daemon :app:assembleDebug
+      - name: Prepare persistent release signing
+        id: signing
+        env:
+          KEYSTORE_B64: ${{ secrets.GENESIS_SIGNING_STORE_B64 }}
+          STORE_PASSWORD: ${{ secrets.GENESIS_SIGNING_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.GENESIS_SIGNING_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.GENESIS_SIGNING_KEY_PASSWORD }}
+        run: |
+          if [[ -n "$KEYSTORE_B64" && -n "$STORE_PASSWORD" && -n "$KEY_ALIAS" && -n "$KEY_PASSWORD" ]]; then
+            printf '%s' "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/genesis-release.jks"
+            echo "GENESIS_KEYSTORE_PATH=$RUNNER_TEMP/genesis-release.jks" >> "$GITHUB_ENV"
+            echo "GENESIS_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "GENESIS_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "GENESIS_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Persistent release signing secrets incomplete; only debug APK will be produced."
+          fi
+      - name: Build signed release APK
+        if: steps.signing.outputs.ready == 'true'
+        run: gradle --no-daemon :app:assembleRelease
+      - name: Upload signed release APK
+        if: steps.signing.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Genesis-Reactor-HQ-release-apk
+          path: app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
