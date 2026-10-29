@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
+import android.webkit.ValueCallback;
 public class MainActivity extends Activity {
  private WebView web;
  @Override public void onCreate(Bundle state) {
@@ -17,6 +18,6 @@ public class MainActivity extends Activity {
   setContentView(web);
  }
  @Override public void onBackPressed() {
-  if (web.canGoBack()) web.goBack(); else super.onBackPressed();
+  web.evaluateJavascript("(window.genesisBack && window.genesisBack()) ? true : false", value -> { if (!"true".equals(value)) runOnUiThread(() -> { if (web.canGoBack()) web.goBack(); else finish(); }); });
  }
 }
