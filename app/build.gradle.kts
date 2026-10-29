@@ -8,8 +8,8 @@ android {
         applicationId = "com.squirrelstudios.genesis"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.3.1"
+        versionCode = 6
+        versionName = "0.5.0"
     }
 
     // Release builds use the same persistent signing identity.
