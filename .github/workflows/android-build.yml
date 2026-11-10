@@ -88,34 +88,18 @@ jobs:
           sha256sum app/build/outputs/apk/release/app-release.apk
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/release/app-release.apk > "$RUNNER_TEMP/genesis-badging.txt"
           sed -n '1,4p' "$RUNNER_TEMP/genesis-badging.txt"
-      - name: Publish v0.8.1 signed APK direct download
+      - name: Publish v0.8.2 signed APK direct download
         if: github.ref == 'refs/heads/feature/ascension-interface-rebuild' && github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view v0.8.1 >/dev/null 2>&1; then
-            echo "Updating signed APK asset on existing release v0.8.1."
-            gh release upload v0.8.1 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.1.apk" --clobber
+          if gh release view v0.8.2 >/dev/null 2>&1; then
+            echo "Updating signed APK asset on existing release v0.8.2."
+            gh release upload v0.8.2 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.2.apk" --clobber
           else
-            gh release create v0.8.1 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.1.apk" \
-              --title "Genesis v0.8.1 · My Games" \
-              --notes "Signed upgrade from Genesis 0.8.0 (versionCode 9). Adds My Games navigation for 7D2D, GTA5, and RDR2. Live game databases are not yet included; custom launcher icon is not yet integrated." \
+            gh release create v0.8.2 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.2.apk" \
+              --title "Genesis v0.8.2 · My Games" \
+              --notes "Signed upgrade from Genesis 0.8.1 (versionCode 10). Adds ARK Survival Ascended, persistent notes within each game subfolder, and official-source reference cards. Live game databases are not yet included; custom launcher icon is not yet integrated." \
               --target "$GITHUB_SHA"
           fi
-
-  diagnose:
-    if: always()
-    needs: [build, signed-release]
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: Post workflow run ID and job results to Genesis PR
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PREVIEW_RESULT: ${{ needs.build.result }}
-          RELEASE_RESULT: ${{ needs.signed-release.result }}
-        run: |
-          gh api repos/${GITHUB_REPOSITORY}/issues/2/comments \
-            -f body="Genesis v0.8.1 build run ${GITHUB_RUN_ID}; preview=${PREVIEW_RESULT}; signed-release=${RELEASE_RESULT}; commit=${GITHUB_SHA}. Diagnostics: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" > /dev/null
