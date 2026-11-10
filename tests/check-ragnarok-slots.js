@@ -38,7 +38,7 @@ for(const folder of ['Creatures & Taming','Breeding & Genetics','Crafting & Reci
  act('selectGameFolder('+JSON.stringify(folder)+')');
  page=act('gamePage()');
  assert(act('ragSlotFacts('+JSON.stringify(folder)+').length')>0,'empty expected populated slot '+folder);
- assert(page.includes('Evidence:'),'missing source reference in '+folder);
+ assert(page.includes('Sources & verification (optional)'),'missing optional provenance information in '+folder);
 }
 act("selectGameFolder('Base Building')");
 assert(act('gamePage()').includes('No Ragnarok-specific source-backed reference data'),'unsupported section not marked pending');
