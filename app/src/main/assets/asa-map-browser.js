@@ -193,7 +193,7 @@ function asaMapsPage(){
  if(!map)h+='<div class="panel"><h3>ARK MAP LIBRARY</h3><p class="empty">Choose a map. Only Ragnarok currently has 96 source-backed entries. Other maps have independent category folders and personal notes; no unsourced facts are filled in.</p></div>';
  else if(!group)h+='<div class="panel"><h3>'+esc(map.name)+'</h3><p class="sub">'+esc(map.group)+' · '+asaMapFacts(map.id).length+' sourced entries · '+asaMapNoteCount(map.id)+' personal notes</p><p class="empty">'+esc(map.desc)+'</p>'+(map.id==='ragnarok'&&asaLegacyNoteCount()?'<button class="secondary" onclick="selectGameFolder(&quot;Ragnarok&quot;)">Open '+asaLegacyNoteCount()+' notes saved in the previous Ragnarok folder</button>':'')+'</div>';
  else if(!asaSelectedSubfolder)h+='<div class="panel"><h3>'+esc(group.name)+' / '+esc(map.name)+'</h3><p class="sub">Choose a subfolder. Map-specific content and notes are kept separate.</p></div>';
- else {const sub=asaSubById(group,map,asaSelectedSubfolder);h+='<div class="panel"><h3>'+esc(sub?.name||'Subfolder')+'</h3><p class="sub">'+esc(map.name)+' / '+esc(group.name)+'</p></div>';h+=asaFactPanel();return h}
+ else {const sub=asaSubById(group,map,asaSelectedSubfolder);h+='<div class="panel"><h3>'+esc(sub?.name||'Subfolder')+'</h3><p class="sub">'+esc(map.name)+' / '+esc(group.name)+'</p></div>';h+=(map.id==='ragnarok'?genesisGuidesPanel(genesisGuideIdsForFolder(asaSelectedCategory,asaSelectedSubfolder)):'')+asaFactPanel();return h}
  h+=asaBrowserControls()+'<div id="asaBrowserList" class="asa-browser-list">'+asaBrowserRows()+'</div>';
  return h;
 }
