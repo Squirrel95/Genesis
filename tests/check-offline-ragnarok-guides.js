@@ -1,0 +1,48 @@
+// Prevent a regression back into a web-link directory: guide content must be stored in the APK.
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'../app/src/main/assets');
+const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const scripts=[...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m=>m[1]);
+assert(scripts.includes('ark-offline-guides.js'),'Missing offline guides script in Android assets');
+const memory=new Map;
+const storage={getItem:k=>memory.get(k)??null,setItem:(k,v)=>memory.set(k,v),removeItem:k=>memory.delete(k),key:i=>[...memory.keys()][i],get length(){return memory.size}};
+const nodes={screen:{innerHTML:''},toast:{textContent:'',classList:{add(){},remove(){}}}};
+const document={getElementById:k=>nodes[k]||(nodes[k]={innerHTML:'',value:''}),querySelectorAll:()=>[],body:{style:{setProperty(){}}}};
+const ctx=vm.createContext({window:{},document,localStorage:storage,scrollTo(){},setTimeout(){},confirm:()=>true,URL,console});
+for(const file of scripts)vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),ctx,{filename:file});
+const main=html.slice(html.lastIndexOf('<script>')+8,html.indexOf('</script>',html.lastIndexOf('<script>')));
+vm.runInContext(main,ctx,{filename:'index.html'});
+const act=code=>vm.runInContext(code,ctx);
+assert.equal(act('window.GENESIS_RAG_GUIDES.length'),7,'Seven offline guides required');
+const ids=['bison','griffin','wyverns','nunatak','caves','resources','map'];
+for(const id of ids){
+ const guide=act('genesisGuideById('+JSON.stringify(id)+')');
+ assert(guide,'Guide missing: '+id);
+ assert(guide.sections.length>=3,'Guide too shallow: '+id);
+ assert(guide.sections.every(s=>s.items.length>=2),'Missing full guidance: '+id);
+ const rendered=act('genesisGuideCard(genesisGuideById('+JSON.stringify(id)+'),true)');
+ assert(rendered.includes('gen-guide-content'),'Guide not rendered offline: '+id);
+ assert(rendered.includes('Sources & verification (optional)'),'Evidence missing: '+id);
+ assert(rendered.indexOf('<details class="gen-proof"')<rendered.indexOf('<a href='),'Evidence must stay behind a collapsible proof section');
+}
+assert.equal(act('ragAllFacts().length'),96,'Existing original facts removed');
+act("selectGame('ASA');selectGameFolder('Ragnarok')");
+let page=act('gamePage()');
+assert(page.includes('READ HERE · OFFLINE GAME GUIDES'),'Main Ragnarok guide missing');
+assert(page.includes('Map Orientation'),'Ragnarok map guide missing');
+assert(page.includes('Source'),'Provenance is missing');
+assert(page.includes('gen-guide-content'),'Actual guide body not rendered');
+act("setRagPack('taming')");
+page=act('gamePage()');
+assert(page.includes('Bison — Taming &amp; Use')||page.includes('Bison — Taming & Use'),'Bison guide missing');
+assert(page.includes('Griffin — Taming &amp; Flight')||page.includes('Griffin — Taming & Flight'),'Griffin guide missing');
+act("selectGameFolder('Maps');asaSelectMap('ragnarok');asaSelectCategory('creatures');asaSelectSubfolder('bison')");
+page=act('gamePage()');
+assert(page.includes('How to tame'),'Nested Bison guide missing');
+assert(page.includes('Superior Kibble'),'Stored offline food information missing');
+assert(page.includes('Sources & verification (optional)'),'Missing optional source attribution');
+act("asaJump(0);asaSelectMap('the-island');asaSelectCategory('creatures');asaSelectSubfolder('bison')");
+page=act('gamePage()');
+assert(!page.includes('Superior Kibble'),'Ragnarok guide leaked to another map');
+console.log('PASS: seven substantive offline Ragnarok guides, collapsed citations, scoped nested folders and existing 96 facts');
