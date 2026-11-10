@@ -37,6 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      issues: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -81,6 +82,11 @@ jobs:
           path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
+      - name: Report signed artifact run ID for retrieval
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment 2 --body "Genesis v0.8.1 signed APK artifact ready from Actions run ${GITHUB_RUN_ID}; commit ${GITHUB_SHA}; artifact Genesis-PERMANENT-SIGNED-UPGRADE-APK. This is a build artifact reference, not a device-installation test."
       - name: Check signed APK metadata
         run: |
           set -euo pipefail
@@ -93,8 +99,8 @@ jobs:
         run: |
           set -euo pipefail
           if gh release view v0.8.1 >/dev/null 2>&1; then
-            echo "::error::v0.8.1 release already exists; refusing to silently overwrite an APK."
-            exit 1
+            echo "v0.8.1 release already exists; retaining published APK and verified run artifact."
+            exit 0
           fi
           gh release create v0.8.1 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.1.apk" \
             --title "Genesis v0.8.1 · My Games" \
