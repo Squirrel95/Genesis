@@ -197,3 +197,14 @@ function asaMapsPage(){
  h+=asaBrowserControls()+'<div id="asaBrowserList" class="asa-browser-list">'+asaBrowserRows()+'</div>';
  return h;
 }
+
+function searchGameNotes(term){
+ const q=String(term||'').toLowerCase();
+ document.querySelectorAll('[data-game-note]').forEach(el=>{el.hidden=!el.dataset.gameNote.toLowerCase().includes(q)});
+}
+function sortGameNotes(mode){
+ const list=document.getElementById('gameNotesList');if(!list)return;
+ const all=Array.from(list.querySelectorAll('[data-game-note]'));
+ all.sort((a,b)=>mode==='name'?a.dataset.gameNoteTitle.localeCompare(b.dataset.gameNoteTitle):mode==='oldest'?a.dataset.gameNoteDate.localeCompare(b.dataset.gameNoteDate):b.dataset.gameNoteDate.localeCompare(a.dataset.gameNoteDate));
+ all.forEach(el=>list.appendChild(el));
+}
