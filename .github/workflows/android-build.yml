@@ -65,6 +65,8 @@ jobs:
           test -n "$GENESIS_SIGNING_KEY_PASSWORD"
           printf '%s' "$SIGNING_STORE_B64" | base64 -d > "$RUNNER_TEMP/genesis-release.jks"
           chmod 600 "$RUNNER_TEMP/genesis-release.jks"
+      - name: Test Ragnarok content in all game slots
+        run: node tests/check-ragnarok-slots.js
       - name: Build signed upgrade APK
         env:
           GENESIS_SIGNING_STORE_FILE: ${{ runner.temp }}/genesis-release.jks
@@ -75,6 +77,13 @@ jobs:
       - name: Verify release APK signature
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs app/build/outputs/apk/release/app-release.apk
+      - name: Verify offline Ragnarok assets are bundled into the APK
+        run: |
+          set -euo pipefail
+          unzip -Z1 app/build/outputs/apk/release/app-release.apk > "$RUNNER_TEMP/genesis-assets.txt"
+          for filename in index.html ragnarok-data.js ragnarok-update-1-explore.js ragnarok-update-2-taming.js ragnarok-update-3-progression.js ragnarok-slots.js; do
+            grep -Fx "assets/$filename" "$RUNNER_TEMP/genesis-assets.txt" >/dev/null || { echo "::error::Missing packaged asset: $filename"; exit 1; }
+          done
       - name: Upload signed installable APK
         uses: actions/upload-artifact@v4
         with:
@@ -88,18 +97,18 @@ jobs:
           sha256sum app/build/outputs/apk/release/app-release.apk
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/release/app-release.apk > "$RUNNER_TEMP/genesis-badging.txt"
           sed -n '1,4p' "$RUNNER_TEMP/genesis-badging.txt"
-      - name: Publish v0.8.4 signed APK direct download
+      - name: Publish v0.8.5 signed APK direct download
         if: github.ref == 'refs/heads/feature/ascension-interface-rebuild' && github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view v0.8.4 >/dev/null 2>&1; then
-            echo "Updating signed APK asset on existing release v0.8.4."
-            gh release upload v0.8.4 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.4.apk" --clobber
+          if gh release view v0.8.5 >/dev/null 2>&1; then
+            echo "Updating signed APK asset on existing release v0.8.5."
+            gh release upload v0.8.5 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.5.apk" --clobber
           else
-            gh release create v0.8.4 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.4.apk" \
-              --title "Genesis v0.8.4 · My Games" \
-              --notes "Signed Genesis 0.8.4 upgrade (versionCode 12). Three major Ragnarok information packs: 24 exploration, 27 creature and 28 boss/resource references, plus 17 foundation entries. Source-backed not game-file verified. Custom launcher icon not yet integrated." \
+            gh release create v0.8.5 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.5.apk" \
+              --title "Genesis v0.8.5 · My Games" \
+              --notes "Signed Genesis 0.8.5 upgrade (versionCode 13). Fixes blank ARK companion slots by displaying source-backed Ragnarok facts and counts in Dashboard, Creatures, Breeding, Crafting, Resources, Maps, Bosses, and Servers. Preserves personal notes. Base Building and Mods lack Ragnarok-verified facts, marked pending. Existing game-file validation and approved launcher icon remain outstanding." \
               --target "$GITHUB_SHA"
           fi
