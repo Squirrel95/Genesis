@@ -36,7 +36,7 @@ jobs:
   signed-release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -80,3 +80,23 @@ jobs:
           name: Genesis-PERMANENT-SIGNED-UPGRADE-APK
           path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
+
+      - name: Check signed APK metadata
+        run: |
+          set -euo pipefail
+          sha256sum app/build/outputs/apk/release/app-release.apk
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/release/app-release.apk | head -n 4
+      - name: Publish v0.8.1 signed APK direct download
+        if: github.ref == 'refs/heads/feature/ascension-interface-rebuild' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v0.8.1 >/dev/null 2>&1; then
+            echo "::error::v0.8.1 release already exists; refusing to silently overwrite an APK."
+            exit 1
+          fi
+          gh release create v0.8.1 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.1.apk" \
+            --title "Genesis v0.8.1 · My Games" \
+            --notes "Signed upgrade from Genesis 0.8.0 (versionCode 9). Adds My Games navigation for 7D2D, GTA5, and RDR2 with game-specific subfolders and search. Crafting databases and live integration are not yet included; the custom launcher icon is not yet integrated." \
+            --target "$GITHUB_SHA"
