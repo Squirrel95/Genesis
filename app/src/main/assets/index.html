@@ -154,17 +154,19 @@ h+='</div>';
 const data=gameNotesRead();
 const notes=data&&Array.isArray(data[currentGameFolderKey()])?data[currentGameFolderKey()]:[];
 h+='<div class="panel"><div class="game-notes-head"><h3>MY NOTES ('+notes.length+')</h3><button class="action" onclick="beginGameNote()">+ Add Note</button></div><p class="empty">Your entries are personal notes, not independently verified facts. An optional source link remains labeled unverified until checked.</p>';
+h+='<div class="asa-filter-row"><label>Search notes<input id="gameNoteSearch" class="field" type="search" oninput="searchGameNotes(this.value)" placeholder="Search saved notes"></label><label>Sort notes<select id="gameNoteSort" class="field" onchange="sortGameNotes(this.value)"><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="name">Title A–Z</option></select></label></div>';
 if(gameNotesError)h+='<p class="game-error" role="alert">'+esc(gameNotesError)+'</p>';
 if(gameEditorId){
 const original=gameEditorId==='new'?null:notes.find(n=>n.id===gameEditorId);
 h+='<div class="game-note-editor"><h3>'+ (original?'EDIT NOTE':'NEW NOTE')+'</h3><label for="gameNoteTitle">Title</label><input class="field" id="gameNoteTitle" maxlength="140" placeholder="Item, location, recipe, discovery…" value="'+esc(original?.title||'')+'"><label for="gameNoteBody">Details</label><textarea class="field" id="gameNoteBody" rows="6" maxlength="6000" placeholder="Write your notes, quantities, coordinates, tests, or instructions">'+esc(original?.body||'')+'</textarea><label for="gameNoteSource">Evidence link (optional, HTTPS)</label><input class="field" id="gameNoteSource" type="url" maxlength="1500" placeholder="https://..." value="'+esc(original?.source||'')+'"><div class="game-note-actions"><button class="action" onclick="saveGameNote()">Save Note</button><button class="secondary" onclick="cancelGameNote()">Cancel</button></div></div>'}
 if(!notes.length)h+='<p class="empty">No personal notes here yet. Tap + Add Note.</p>';
+h+='<div id="gameNotesList">';
 for(const n of notes){
 if(!n||typeof n.id!=='string')continue;
-h+='<div class="gamefact game-personal"><b>'+esc(n.title)+'</b><small>Personal note · '+esc((n.updatedAt||'').slice(0,10))+'</small><p class="game-note-body">'+esc(n.body)+'</p>';
+h+='<div class="gamefact game-personal" data-game-note="'+esc((n.title+' '+n.body).toLowerCase())+'" data-game-note-title="'+esc(n.title.toLowerCase())+'" data-game-note-date="'+esc(n.updatedAt||'')+'"><b>'+esc(n.title)+'</b><small>Personal note · '+esc((n.updatedAt||'').slice(0,10))+'</small><p class="game-note-body">'+esc(n.body)+'</p>';
 if(n.source){const url=safeGameUrl(n.source);if(url)h+='<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">Your source (not independently verified) ↗</a>'}
 h+='<div class="game-note-actions"><button class="secondary" onclick="beginGameNote(\''+esc(n.id)+'\')">Edit</button><button class="secondary" onclick="deleteGameNote(\''+esc(n.id)+'\')">Delete</button></div></div>'}
-h+='</div>';
+h+='</div></div>';
 return h+'</div>'}
 h+='<div class="panel"><label for="gameFolderSearch">Search folders</label><input id="gameFolderSearch" class="field" type="search" placeholder="Search '+esc(selectedGame)+' folders" oninput="filterGameFolders(this.value)"></div>';
 for(const name of genesisGameFolders[selectedGame]){
