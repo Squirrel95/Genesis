@@ -347,3 +347,58 @@ window.GENESIS_RAG_GUIDES=Object.freeze([
     "verified": "mixed"
   }
 ]);
+
+
+function genesisGuideById(id){return (window.GENESIS_RAG_GUIDES||[]).find(x=>x.id===id)||null}
+function genesisGuideIdsForPack(pack){
+ if(pack==='taming')return ['bison','griffin','wyverns'];
+ if(pack==='progress')return ['nunatak','resources'];
+ if(pack==='explore')return ['map','caves','resources'];
+ return ['map','bison','griffin','wyverns','nunatak','caves','resources'];
+}
+function genesisGuideIdsForFolder(category,sub){
+ const lookup={
+ overview:{general:['map'],regions:['map'],spawns:['map'],hazards:['map']},
+ exploration:{caves:['caves'],artifacts:['caves','nunatak'],'wyvern-nests':['wyverns','caves'],dungeons:['caves']},
+ creatures:{bison:['bison'],griffin:['griffin'],wyverns:['wyverns'],'other-creatures':['bison','griffin','wyverns']},
+ breeding:{'bison-babies':['bison'],'griffin-babies':['griffin'],'wyvern-babies':['wyverns']},
+ resources:{'resource-list':['resources'],'resource-map':['resources'],harvesting:['resources'],food:['bison','wyverns'],'tek-crafting':['nunatak']},
+ bosses:{nunatak:['nunatak'],tributes:['nunatak'],element:['nunatak'],'mini-boss':['caves'],loot:['nunatak','resources']},
+ special:{viking:['map'],labyrinth:['caves'],wyvern:['wyverns','caves'],nunatak:['nunatak'],bison:['bison','griffin'],isles:['map']},
+ all:{all:['map','bison','griffin','wyverns','nunatak','caves','resources']}
+ };
+ return lookup[category]?.[sub]||[];
+}
+function genesisProofDisclosure(sources,credibility){
+ let body='';
+ for(const item of sources||[]){
+  const url=safeGameUrl(item[1]);
+  if(url)body+='<li><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(item[0])+'</a></li>';
+ }
+ return '<details class="gen-proof"><summary>Sources & verification (optional)</summary><div><p>These are locally stored summaries of published information. '+(credibility==='mixed'?'Some claims use community documentation.':'Exact current-game values have not been verified against your installed game data.')+'</p><ul>'+body+'</ul></div></details>';
+}
+function genesisGuideCard(guide,isOpen){
+ if(!guide)return '';
+ let html='<article class="gen-guide"><details '+(isOpen?'open':'')+'><summary><span class="gen-guide-kicker">'+esc(guide.group)+' · Offline guide</span><strong>'+esc(guide.title)+'</strong><small>'+esc(guide.summary)+'</small></summary><div class="gen-guide-content">';
+ for(const section of guide.sections||[]){
+  html+='<section><h4>'+esc(section.heading)+'</h4><ul>';
+  for(const item of section.items||[])html+='<li>'+esc(item)+'</li>';
+  html+='</ul></section>';
+ }
+ html+=genesisProofDisclosure(guide.source,guide.verified)+'</div></details></article>';
+ return html;
+}
+function genesisGuidesPanel(ids){
+ const docs=(ids||[]).map(genesisGuideById).filter(Boolean);
+ if(!docs.length)return '';
+ let html='<div class="panel gen-guide-panel"><h3>READ HERE · OFFLINE GAME GUIDES</h3><p class="empty">Taming, bosses, caves and resources are described inside Genesis. Tap a guide to read its full sections. External websites are optional source checks, not required reading.</p>';
+ for(let i=0;i<docs.length;i++)html+=genesisGuideCard(docs[i],i===0);
+ return html+'</div>';
+}
+function genesisInlineFactCard(f){
+ const status=f.evidence==='publisher'?'Publisher documentation':'Community documentation · needs ASA check';
+ const url=safeGameUrl(f.url);
+ const source=url?'<li><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(f.source)+'</a></li>':'';
+ return '<article class="gamefact rag-fact gen-inline-fact"><div class="rag-fact-meta"><span>'+esc(f.category)+'</span><small class="'+(f.evidence==='publisher'?'rag-primary':'rag-secondary')+'">'+status+'</small></div><b>'+esc(f.title)+'</b><p>'+esc(f.detail)+'</p>'+
+ '<details class="gen-proof"><summary>Sources & verification (optional)</summary><div><p>Published reference, not independently tested against the current game files.</p><ul>'+source+'</ul></div></details></article>';
+}
