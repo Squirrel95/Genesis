@@ -18,15 +18,12 @@ function ragSlotFacts(folder){
  default:return [];
  }
 }
-function ragFactCard(f){
- const url=safeGameUrl(f.url);
- const status=f.evidence==='publisher'?'Publisher documented':'Community documented · verify in ASA';
- return '<article class="gamefact rag-fact"><div class="rag-fact-meta"><span>'+esc(f.category)+'</span><small class="'+(f.evidence==='publisher'?'rag-primary':'rag-secondary')+'">'+status+'</small></div><b>'+esc(f.title)+'</b><p>'+esc(f.detail)+'</p>'+(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">Evidence: '+esc(f.source)+' ↗</a>':'<small>Source not available</small>')+'</article>';
-}
+function ragFactCard(f){return genesisInlineFactCard(f)}
 function openRagPack(pack){ragActivePack=pack;ragSearch='';ragCategory='All';ragLimit=12;selectGameFolder('Ragnarok')}
 function renderRagDashboard(){
  const updates=window.GENESIS_RAG_UPDATES||{};
  let h='<div class="panel rag-dashboard"><h3>RAGNAROK ASCENDED · LOADED REFERENCE PACKS</h3><p class="empty">These are source-backed records, not blank placeholders. Select a pack to view all its information. Personal notes remain separate.</p>';
+h+=genesisGuidesPanel(['bison','nunatak','caves']);
  for(const p of ragPacks){
   const facts=updates[p.id]||[];
   h+='<div class="rag-preview"><div class="rag-preview-title"><b>'+esc(p.title)+'</b><small>'+facts.length+' reference entries</small></div>';
@@ -36,9 +33,11 @@ function renderRagDashboard(){
  h+='<button class="action" onclick="selectGameFolder(&quot;Ragnarok&quot;)">Open all '+ragAllFacts().length+' Ragnarok references ›</button></div>';
  return h;
 }
+const ragGuideFolderIds={'Dashboard':['map','bison','nunatak'],'Creatures & Taming':['bison','griffin','wyverns'],'Breeding & Genetics':['bison','griffin','wyverns'],'Crafting & Recipes':['nunatak'],'Items & Resources':['resources'],'Maps & Caves':['caves','map'],'Bosses & Progression':['nunatak'],'Servers & Transfers':['map']};
 function renderRagFolderFacts(folder){
  const facts=ragSlotFacts(folder);
  let h='<div class="panel rag-slot"><div class="rag-slot-title"><h3>RAGNAROK · '+esc(folder.toUpperCase())+'</h3><small>'+facts.length+' source-backed entries</small></div>';
+h+=genesisGuidesPanel(ragGuideFolderIds[folder]||[]);
  if(!facts.length){
   h+='<p class="empty">No Ragnarok-specific source-backed reference data is available for this section yet. Your own notes can still be added below. We will not present placeholders as verified facts.</p>';
  }else{
