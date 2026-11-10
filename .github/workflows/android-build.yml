@@ -88,18 +88,18 @@ jobs:
           sha256sum app/build/outputs/apk/release/app-release.apk
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/release/app-release.apk > "$RUNNER_TEMP/genesis-badging.txt"
           sed -n '1,4p' "$RUNNER_TEMP/genesis-badging.txt"
-      - name: Publish v0.8.2 signed APK direct download
+      - name: Publish v0.8.3 signed APK direct download
         if: github.ref == 'refs/heads/feature/ascension-interface-rebuild' && github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if gh release view v0.8.2 >/dev/null 2>&1; then
-            echo "Updating signed APK asset on existing release v0.8.2."
-            gh release upload v0.8.2 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.2.apk" --clobber
+          if gh release view v0.8.3 >/dev/null 2>&1; then
+            echo "Updating signed APK asset on existing release v0.8.3."
+            gh release upload v0.8.3 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.3.apk" --clobber
           else
-            gh release create v0.8.2 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.2.apk" \
-              --title "Genesis v0.8.2 · My Games" \
-              --notes "Signed upgrade from Genesis 0.8.1 (versionCode 10). Adds ARK Survival Ascended, persistent notes within each game subfolder, and official-source reference cards. Live game databases are not yet included; custom launcher icon is not yet integrated." \
+            gh release create v0.8.3 "app/build/outputs/apk/release/app-release.apk#Genesis-v0.8.3.apk" \
+              --title "Genesis v0.8.3 · My Games" \
+              --notes "Signed update from Genesis 0.8.2 (versionCode 11). Adds a searchable Ragnarok Ascended reference library with 17 sourced facts, evidence labels, maps navigation and existing per-folder notes. Current game-file coordinate verification and approved launcher icon are not included." \
               --target "$GITHUB_SHA"
           fi
