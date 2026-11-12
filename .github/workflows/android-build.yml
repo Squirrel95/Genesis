@@ -21,6 +21,22 @@ jobs:
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
+      - name: Validate ARK reference database
+        run: |
+          node --check app/src/main/assets/ark-data.js
+          node --check app/src/main/assets/ark-ui.js
+          node - <<'NODE'
+          global.window = {};
+          require('./app/src/main/assets/ark-data.js');
+          const rows = window.ARK_SPECIES;
+          if (!Array.isArray(rows) || rows.length < 250) throw new Error('Missing creature records');
+          const ids = new Set(rows.map(r => r.id));
+          if (ids.size !== rows.length) throw new Error('Duplicate creature IDs');
+          if (rows.some(r => !r.name || !r.category || !r.source || !r.guideStatus)) throw new Error('Missing record provenance');
+          const guides = rows.filter(r => r.tame);
+          if (guides.length < 80) throw new Error('Expected taming guides not present');
+          console.log('ARK index:', rows.length, '| taming guides:', guides.length);
+          NODE
       - name: Build installable debug APK
         run: gradle --no-daemon :app:assembleDebug
       - name: Upload APK
