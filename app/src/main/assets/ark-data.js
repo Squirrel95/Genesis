@@ -80,7 +80,13 @@ window.ARK_SPECIES=[
     "id": "elderclaw",
     "name": "Elderclaw",
     "maps": [
-      "Valguero"
+      "Ragnarok",
+      "Valguero",
+      "Lost Colony",
+      "The Center",
+      "Aberration",
+      "Extinction",
+      "Astraeos"
     ],
     "tame": "Grow wild seed or claim wild baby",
     "food": "Elderclaw Seed; Large Crop Plot; 300% greenhouse; irrigation; fertilizer",
@@ -259,7 +265,7 @@ window.ARK_SPECIES=[
     "baby": "Egg",
     "breed": "Yes, within the same type",
     "uses": "Elemental breath, fast transport and aerial combat",
-    "care": "Incubate a fertilized egg; under standard rules, baby Wyverns need Wyvern Milk from wild females or Alpha Wyverns.",
+    "care": "Incubate a fertilized egg. Standard babies need Wyvern Milk from wild female or Alpha Wyverns; ASA Ragnarok also allows Bison Milk as an alternative.",
     "steps": [
       "Scout a Wyvern nesting area with a fast flyer.",
       "Steal a fertilized egg and escape; standard adult Wyverns cannot be tranquilized for taming.",
@@ -270,6 +276,6 @@ window.ARK_SPECIES=[
     "source": "https://ark.wiki.gg/wiki/Wyvern",
     "verified": "2026-11-12",
     "image": "https://ark.wiki.gg/wiki/Special:Redirect/file/Wyvern.png",
-    "extra": "Different elemental Wyvern types do not interbreed."
+    "extra": "Different elemental Wyvern types do not interbreed. In ASA, Bison Milk from female Bison on Ragnarok can feed and imprint baby Wyverns."
   }
 ];
