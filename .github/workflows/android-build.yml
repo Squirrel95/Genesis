@@ -25,6 +25,29 @@ jobs:
         run: |
           node --check app/src/main/assets/ark-data.js
           node --check app/src/main/assets/ark-ui.js
+          node --check app/src/main/assets/ark-reference.js
+          node --check app/src/main/assets/ark-reference-ui.js
+          node - <<'NODE'
+          global.window = {};
+          require('./app/src/main/assets/ark-reference.js');
+          const pack = window.ARK_REFERENCE;
+          if (!pack || !pack.meta || !pack.data) throw new Error('Missing audited ARK data');
+          const datasets = Object.keys(pack.data);
+          const rows = Object.values(pack.data).flat();
+          if (datasets.length !== 38 || rows.length !== 703) throw new Error('Unexpected ARK dataset counts');
+          const verified = rows.filter(r => r.audit_status === 'Confirmed against source');
+          if (verified.length !== 51) throw new Error('Verified count mismatch');
+          if (rows.some(r => !r.audit_status || !r.confidence)) throw new Error('Missing audit provenance');
+          const boss = pack.data.bosses.find(r => r.boss === 'Broodmother Lysrix' && r.tier === 'Gamma');
+          if (!boss || boss.element_reward !== 24) throw new Error('Incorrect ASA Broodmother reward');
+          for (const r of [...pack.data.breeding_eggs,...pack.data.breeding_gestation]) {
+            if ((r.asa_availability || '').startsWith('Not in unmodded ASA') && r.timer_usable !== false)
+              throw new Error('Unavailable creature timer enabled: '+r.species);
+            if (/^(Rhyniognatha|Reaper King)$/.test(r.species) && r.timer_usable !== false)
+              throw new Error('Special birth countdown enabled: '+r.species);
+          }
+          console.log('Audited reference:', rows.length, 'rows | verified:', verified.length, '| datasets:', datasets.length);
+          NODE
           node - <<'NODE'
           global.window = {};
           require('./app/src/main/assets/ark-data.js');
