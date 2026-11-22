@@ -1,6 +1,8 @@
 name: Genesis Android APK
 on:
   push:
+    branches: [main, feature/genesis-gunmetal-ui]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 jobs:
@@ -21,6 +23,10 @@ jobs:
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
+      - name: Validate Genesis UI JavaScript
+        run: |
+          node --check app/src/main/assets/genesis-shell.js
+          python3 -m py_compile scripts/prepare_game_art.py
       - name: Validate ARK reference database
         run: |
           node --check app/src/main/assets/ark-data.js
@@ -60,11 +66,13 @@ jobs:
           if (guides.length < 80) throw new Error('Expected taming guides not present');
           console.log('ARK index:', rows.length, '| taming guides:', guides.length);
           NODE
+      - name: Cache game art inside APK (staggered source retrieval)
+        run: python3 scripts/prepare_game_art.py
       - name: Build installable debug APK
         run: gradle --no-daemon :app:assembleDebug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Genesis-foundation-debug-apk
+          name: Genesis-gunmetal-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
