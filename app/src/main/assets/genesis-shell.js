@@ -173,7 +173,7 @@ function makeCard(info,index){
   for(let i=0;i<3;i++){const d=document.createElement('span');dots.append(d);dotList.push(d)}
   let slide=(index+Math.floor(Math.random()*3))%3;
   let fallbacksTried=0;
-  function localUrl(){return 'game-art/'+info.id+'-'+(slide+1)+'.jpg'}
+  function localUrl(){return 'game-art/'+info.id+'-'+(slide+1)+(info.id==='helix'?'.svg':'.jpg')}
   function remoteUrl(){const assets=['header.jpg','library_hero.jpg','capsule_616x353.jpg'];return info.steam?'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/'+info.steam+'/'+assets[slide]:''}
   function displaySlide(){
     pic.classList.add('is-loading');fallbacksTried=0;
