@@ -96,12 +96,14 @@ function syncSelection(){
 }
 const originalGo=window.go;
 window.go=function(p){
+  if(p!=='games')clearGameTimers();
   originalGo(p);
   current=p;
   syncSelection();
 };
 const originalChooseGame=window.chooseGame;
 window.chooseGame=function(g){
+  clearGameTimers();
   originalChooseGame(g);
   current=g==='ARK: Survival Ascended'?'ark':g==='7D2D'?'die':'games';
   syncSelection();
@@ -148,8 +150,8 @@ const catalog=[
 ];
 const imageFiles=Array.from({length:3},(_,i)=>i+1);
 const cachedFav=(()=>{try{return new Set(JSON.parse(localStorage.getItem('genesis.favorites.v1')||'[]'))}catch(_){return new Set()}})();
-let gameTimers=[];
-const clearGameTimers=()=>{gameTimers.forEach(clearTimeout);gameTimers=[]};
+const gameTimers=new Set();
+const clearGameTimers=()=>{gameTimers.forEach(clearTimeout);gameTimers.clear()};
 let gameFilter='';
 const oldRenderGames=window.renderGames;
 const topSearch=document.createElement('input');
@@ -186,12 +188,12 @@ function makeCard(info,index){
   function cycle(dir){slide=(slide+dir+3)%3;displaySlide();schedule()}
   let task;
   function schedule(){
-    if(task)clearTimeout(task);
+    if(task){clearTimeout(task);gameTimers.delete(task);}
     if(document.hidden||document.body.classList.contains('low'))return;
     // Stagger every card: no synchronized full-gallery invalidations.
     const wait=6500+Math.floor(Math.random()*5300)+(index*480);
-    task=setTimeout(()=>{if(!document.hidden){slide=(slide+(Math.random()<.5?1:2))%3;displaySlide();schedule()}},wait);
-    gameTimers.push(task);
+    task=setTimeout(()=>{gameTimers.delete(task);if(!document.hidden){slide=(slide+(Math.random()<.5?1:2))%3;displaySlide();schedule()}},wait);
+    gameTimers.add(task);
   }
   for(const [direction,cls,glyph,label] of [[-1,'prev','‹','Previous artwork'],[1,'next','›','Next artwork']]){
     const b=textNode('button','game-art-nav '+cls,glyph);b.type='button';b.setAttribute('aria-label',label+' for '+info.title);
