@@ -88,3 +88,20 @@ body.rgb-hyper .genesis-nav-btn .symbol{color:#f2c453}
 @media(prefers-reduced-motion:reduce){.genesis-menu-backdrop,.genesis-sidepanel,.genesis-menu-toggle,.game-art-frame img{transition:none!important}body.rgb-hyper .genesis-side-header:after,body.rgb-hyper .genesis-side-footer:before{animation:none!important}}
 body.low .genesis-menu-backdrop,body.low .genesis-sidepanel,body.low .genesis-menu-toggle,body.low .game-art-frame img{transition:none!important}
 body.low.rgb-hyper .genesis-side-header:after,body.low.rgb-hyper .genesis-side-footer:before{animation:none!important}
+
+
+/* Working controls for all approved lighting modes. Small compositor-friendly accents only. */
+body.rgb-simple .genesis-nav-btn.active,body.rgb-simple .genesis-menu-toggle{box-shadow:0 0 calc(13px * var(--rgb-brightness)) var(--rgb),inset 0 1px #fff5!important}
+body.rgb-simple[data-rgb-effect="rainbow"] .genesis-side-header:after,body.rgb-simple[data-rgb-effect="chase"] .genesis-side-header:after{content:"";display:block;height:3px;margin-top:7px;background:linear-gradient(90deg,#f33,#ffcf20,#45ff30,#20e4ef,#a438fe);background-size:200% 100%;animation:genesis-rgb-flow var(--rgb-speed) linear infinite;filter:brightness(calc(.3 + var(--rgb-brightness)))}
+body.rgb-simple[data-rgb-effect="static"] .genesis-side-header:after{content:"";display:block;height:3px;margin-top:7px;background:var(--rgb);filter:brightness(calc(.3 + var(--rgb-brightness)))}
+body.rgb-simple[data-rgb-effect="pulse"] .genesis-side-header:after,body.rgb-simple[data-rgb-effect="breathing"] .genesis-side-header:after{content:"";display:block;height:3px;margin-top:7px;background:var(--rgb);animation:genesis-rgb-breathe var(--rgb-speed) ease-in-out infinite}
+body.rgb-hyper[data-rgb-effect="static"] .genesis-side-header:after,body.rgb-hyper[data-rgb-effect="static"] .genesis-side-footer:before{animation:none;background:var(--rgb)}
+body.rgb-hyper[data-rgb-effect="breathing"] .genesis-side-header:after,body.rgb-hyper[data-rgb-effect="breathing"] .genesis-side-footer:before{animation:genesis-rgb-breathe var(--rgb-speed) ease-in-out infinite}
+body.rgb-hyper[data-rgb-effect="pulse"] .genesis-side-header:after,body.rgb-hyper[data-rgb-effect="pulse"] .genesis-side-footer:before{animation:genesis-rgb-pulse calc(var(--rgb-speed) * .5) steps(2,end) infinite}
+body.rgb-hyper[data-rgb-effect="chase"] .genesis-side-header:after,body.rgb-hyper[data-rgb-effect="chase"] .genesis-side-footer:before{animation:genesis-rgb-flow var(--rgb-speed) linear infinite}
+body.rgb-hyper[data-rgb-effect="rainbow"] .genesis-side-header:after,body.rgb-hyper[data-rgb-effect="rainbow"] .genesis-side-footer:before{animation:genesis-rgb-flow var(--rgb-speed) linear infinite}
+body.rgb-hyper .genesis-side-header:after,body.rgb-hyper .genesis-side-footer:before{filter:brightness(calc(.3 + var(--rgb-brightness)))}
+@keyframes genesis-rgb-breathe{0%,100%{opacity:.28}50%{opacity:1}}
+@keyframes genesis-rgb-pulse{0%,100%{opacity:.32}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){body.rgb-simple .genesis-side-header:after,body.rgb-hyper .genesis-side-header:after,body.rgb-hyper .genesis-side-footer:before{animation:none!important}}
+body.low .genesis-side-header:after,body.low .genesis-side-footer:before{animation:none!important}
