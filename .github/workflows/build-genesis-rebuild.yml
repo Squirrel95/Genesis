@@ -19,8 +19,16 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Install Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Inspect installed Android SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls -ld "$ANDROID_HOME/platforms" "$ANDROID_HOME/build-tools" || true
+          ls "$ANDROID_HOME/platforms" || true
+          ls "$ANDROID_HOME/build-tools" || true
+          if [ ! -e "$ANDROID_HOME/platforms/android-35/android.jar" ]; then
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-35" || true
+          fi
+          test -e "$ANDROID_HOME/platforms/android-35/android.jar"
       - name: Install Gradle 8.11.1
         uses: gradle/actions/setup-gradle@v4
         with:
