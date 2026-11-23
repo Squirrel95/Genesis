@@ -33,6 +33,23 @@ jobs:
           node --check app/src/main/assets/ark-ui.js
           node --check app/src/main/assets/ark-reference.js
           node --check app/src/main/assets/ark-reference-ui.js
+          node --check app/src/main/assets/ark-personal-seed.js
+          node --check app/src/main/assets/ark-personal-tracker.js
+          node - <<'NODE'
+          global.window = {};
+          require('./app/src/main/assets/ark-personal-seed.js');
+          const a=window.GENESIS_DINO_SEED;
+          if (!a || a.dinos.length!==34) throw new Error('Expected 34 personal dino records');
+          if (new Set(a.dinos.map(d=>d.id)).size!==34) throw new Error('Duplicate dino IDs');
+          const species=new Set(a.dinos.map(d=>d.species.replace('Burning Mantis','Mantis').replace('Sunset Rubber Ceratosaurus','Ceratosaurus')));
+          if (species.size!==11) throw new Error('Expected 11 recorded species, got '+species.size);
+          for (const d of a.dinos) {
+            if (!d.photo || !d.species || !a.species[d.species]) throw new Error('Missing metadata for dino #'+d.id);
+          }
+          if (a.dinos.filter(d=>d.species==='Pegomastax').length!==7) throw new Error('Missing Gacha collectors');
+          if (a.dinos.filter(d=>d.species.includes('Mantis')).length!==6) throw new Error('Missing mantis');
+          console.log('Personal dinos:',a.dinos.length,'| species:',species.size);
+          NODE
           node - <<'NODE'
           global.window = {};
           require('./app/src/main/assets/ark-reference.js');
