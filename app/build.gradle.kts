@@ -9,15 +9,13 @@ val releaseSigningReady = listOf(releaseStorePath, releaseStorePassword, release
 android {
     namespace = "com.squirrelstudios.genesis"
     compileSdk = 35
-
     defaultConfig {
         applicationId = "com.squirrelstudios.genesis"
         minSdk = 26
         targetSdk = 35
-        versionCode = 15
-        versionName = "0.8.7"
+        versionCode = 16
+        versionName = "0.9.0-rebuild"
     }
-
     signingConfigs {
         create("genesisRelease") {
             if (releaseSigningReady) {
@@ -28,14 +26,12 @@ android {
             }
         }
     }
-
     buildTypes {
         getByName("release") {
             if (releaseSigningReady) signingConfig = signingConfigs.getByName("genesisRelease")
         }
     }
 }
-
 // A production APK must never silently fall back to an ephemeral debug key.
 tasks.matching { it.name == "preReleaseBuild" }.configureEach {
     doFirst {
