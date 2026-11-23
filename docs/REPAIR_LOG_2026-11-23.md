@@ -1,0 +1,11 @@
+Genesis v0.9.2 repaired
+- Android root view now handles system bar, cutout and keyboard insets on Android 11+; Android 8–10 preserve OS window fitting.
+- All six gameplay cards have three bundled images each, independent from all UI controls.
+- Favorite stars belong to game card metadata, slideshow arrows and dots are in a separate toolbar.
+- Clicking a dot selects the exact image. Rotation is staggered to advance one card every two seconds.
+- Image uploads allow one exact slot or all three and use IndexedDB on the device.
+- Home core uses approved brand crest instead of generic symbol.
+- Launcher label shortens to “Genesis” so Android home screen label is not truncated.
+- Artwork reports LOCAL READY; FPS counter measures requestAnimationFrame only, not fictitious game/PC telemetry.
+- Phone install/signing remains untested in CI. Existing Debug APKs may have different signature.
+- Gallery scenes are original generated art and crops from approved mockups; they are not verified official game screenshots. RDR2 scenic variants remain western-inspired illustration placeholders.

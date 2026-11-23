@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
+import android.graphics.Insets;
+import android.view.WindowInsets;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.net.Uri;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -22,6 +27,9 @@ public class MainActivity extends Activity {
         super.onCreate(state);
         getWindow().setStatusBarColor(Color.rgb(9,10,12));
         getWindow().setNavigationBarColor(Color.rgb(9,10,12));
+        // API 35 Android 15+ draws edge-to-edge by default. Explicit layout and
+        // the root insets listener keep all interactive content below the status bar.
+        if (Build.VERSION.SDK_INT >= 30) getWindow().setDecorFitsSystemWindows(false);
         web = new WebView(this);
         web.setBackgroundColor(Color.rgb(8,10,12));
         WebSettings s = web.getSettings();
@@ -60,7 +68,21 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        setContentView(web);
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(Color.rgb(8,10,12));
+        root.addView(web,new FrameLayout.LayoutParams(
+          ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
+        if (Build.VERSION.SDK_INT >= 30) {
+            root.setOnApplyWindowInsetsListener((view, insets) -> {
+                Insets bars = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+                Insets keyboard = insets.getInsets(WindowInsets.Type.ime());
+                int bottom = Math.max(bars.bottom,keyboard.bottom);
+                view.setPadding(bars.left,bars.top,bars.right,bottom);
+                return insets;
+            });
+        }
+        setContentView(root);
+        if (Build.VERSION.SDK_INT >= 30) root.requestApplyInsets();
         web.loadUrl("file:///android_asset/index.html");
     }
 

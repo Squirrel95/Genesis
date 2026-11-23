@@ -13,8 +13,8 @@ android {
         applicationId = "com.squirrelstudios.genesis"
         minSdk = 26
         targetSdk = 35
-        versionCode = 17
-        versionName = "0.9.1-icon"
+        versionCode = 18
+        versionName = "0.9.2-repaired"
     }
     signingConfigs {
         create("genesisRelease") {
