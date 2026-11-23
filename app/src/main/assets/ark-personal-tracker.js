@@ -108,4 +108,5 @@ renderCards();
 }
 window.renderPersonalDinos=render;
 window.exportPersonalDinoEdits=function(){return {edits:edits,feeding:feeding}};
+window.importPersonalDinoEdits=function(bundle){if(!bundle||typeof bundle!=='object'||!bundle.edits||typeof bundle.edits!=='object')return false;var valid=new Set(seed.dinos.map(function(d){return String(d.id)}));var incoming={};for(var k of Object.keys(bundle.edits)){if(valid.has(k)&&bundle.edits[k]&&typeof bundle.edits[k]==='object')incoming[k]=bundle.edits[k]}edits=incoming;feeding=bundle.feeding&&typeof bundle.feeding==='object'?bundle.feeding:{};save();return true;};
 })();
