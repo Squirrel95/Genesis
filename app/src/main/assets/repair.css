@@ -1,0 +1,33 @@
+
+/* Genesis v0.9.2 REPAIR PATCH – structural fixes, not overlays */
+:root{--card-art-ratio:16/9}
+.game-grid{min-width:0}
+.game-card{min-width:0;overflow:hidden}
+.art-frame{height:auto!important;aspect-ratio:var(--card-art-ratio);position:relative;overflow:hidden;border-radius:8px 8px 3px 3px}
+.art-frame .gallery-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.art-frame::after{display:none!important}
+.art-toolbar{display:flex;align-items:center;justify-content:center;gap:10px;padding:6px 4px;margin-top:0;background:#050806;border-bottom:1px solid #4c6837;min-height:39px}
+.art-toolbar .art-step{position:static!important;inset:auto;height:27px;width:31px;border-radius:6px;font-size:24px;line-height:20px;z-index:auto;background:#172014;border:1px solid #9c822e;box-shadow:none}
+.art-toolbar .dots{position:static!important;inset:auto;display:flex;align-items:center;gap:7px;z-index:auto}
+.art-toolbar .dot{appearance:none;border:1px solid #737b72;border-radius:50%;width:11px;height:11px;background:#525a50;box-shadow:none;padding:0;cursor:pointer}
+.art-toolbar .dot.on{background:var(--accent);border-color:#d7ffb0;box-shadow:0 0 7px var(--accent)}
+.art-toolbar .slide-counter{font-size:10px;color:#a9f78e;white-space:nowrap;min-width:25px;text-align:center;font-weight:bold}
+.game-title-row{display:flex;justify-content:space-between;align-items:center;gap:5px;min-width:0}
+.game-title-row strong{flex:1;min-width:0}
+.game-title-row .fave{position:static!important;top:auto;right:auto;border:1px solid #84692e;border-radius:5px;display:grid;place-items:center;flex:0 0 31px;height:30px;background:#0b0f0b;z-index:auto;font-size:22px;box-shadow:none;text-shadow:none}
+.game-icons .input-badge{display:inline-flex;align-items:center;justify-content:center;flex:0 0 25px;width:25px;height:25px;padding:1px 2px}
+.game-icons svg{display:block}
+.game-icons .tag{font-size:9px;white-space:nowrap;line-height:1.2}
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:13px;max-width:100%;min-width:0}
+.tabs .metal{min-width:0;white-space:normal;overflow-wrap:break-word;padding:10px 6px;font-size:10px;min-height:43px}
+.art-editor{min-width:0}.art-slot{min-width:0}.slot-replace{width:100%;font-size:9px;padding:5px 2px;margin-top:6px}
+.core-squirrel{display:block;object-fit:contain;max-width:100%;height:88px;max-height:24vw;margin:auto;filter:drop-shadow(0 0 9px #6fff3885)}
+.core-symbol{display:block;margin:0 auto}
+.topbar{position:relative;z-index:3;box-sizing:border-box}
+@media(max-width:850px){.tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.side-stats{grid-template-columns:1fr}.game-layout{grid-template-columns:1fr}}
+@media(max-width:600px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.tabs .metal{padding:9px 6px;min-height:39px}.game-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.art-toolbar{gap:5px;padding:5px 1px}.art-toolbar .art-step{width:24px;height:25px;font-size:19px}.art-toolbar .dot{width:9px;height:9px}.game-title-row .fave{width:26px;flex-basis:26px;height:28px;font-size:19px}.game-icons .tag{font-size:8px}.side-stats{grid-template-columns:1fr}}
+@media(max-width:340px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.game-grid{grid-template-columns:1fr}}
+
+/* v0.9.4: extend the approved command core without replacing its shell. */
+.command-upgrade{margin-top:14px;border-color:var(--rim)}
+.command-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.command-head h2{margin:3px 0 10px}.command-local{color:var(--accent);font-size:10px;letter-spacing:.08em;font-weight:bold}.command-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.command-metrics button{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:65px;padding:7px 3px}.command-metrics b{font-size:23px;color:var(--gold);font-variant-numeric:tabular-nums}.command-metrics small{font-size:10px;overflow-wrap:anywhere;line-height:1.2}.command-perf{border-top:1px solid #74613866;margin-top:12px;padding-top:12px}.command-perf>div{flex:1;min-width:120px}.command-perf strong,.command-perf small{display:block}.command-perf small{color:var(--muted);font-size:11px}.command-perf button{min-height:44px;font-size:11px}.command-upgrade button:active,.home-tile:active{transform:translateY(1px);filter:brightness(1.12)}body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}body.reduce-motion{scroll-behavior:auto}@media(max-width:600px){.command-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(prefers-reduced-motion:reduce){.command-upgrade *, .home-tile{transition:none!important;animation:none!important}}

@@ -1,0 +1,51 @@
+/* ARK personal tracker; scoped so Genesis shell and other game modules stay unchanged. */
+.dt{color:#f1f0e9;--dt-gold:#e4bb6a;--dt-metal:#141a1b;--dt-green:#acff76}
+.dt-head{background:linear-gradient(125deg,#303332,#111818);border:1px solid #726446;border-radius:16px;padding:16px;margin:8px 0 12px;box-shadow:inset 0 1px #9a936d3b}
+.dt-head h2{font-size:16px;color:#f0d18f;letter-spacing:1.4px;margin:0 0 7px}
+.dt-head p{margin:0;color:#bcc6be;font-size:12px;line-height:1.5}
+.dt-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:12px}
+.dt-summary>div{border:1px solid #61533b;background:#1b201d;border-radius:11px;padding:10px;text-align:center}
+.dt-summary strong{display:block;color:#d8ffb4;font-size:21px;font-variant-numeric:tabular-nums}
+.dt-summary small{display:block;color:#b9b6a2;font-size:9px;letter-spacing:.6px;margin-top:3px}
+.dt-notice{font-size:12px;color:#ffd79b;background:#312b1d;border:1px solid #7b6130;border-radius:11px;padding:11px;margin:0 0 12px;line-height:1.5}
+.dt-controls{display:grid;grid-template-columns:2fr 1fr;gap:8px}
+.dt .field{background:#101719;color:#f7f3e9;border-color:#575847;font-size:13px}
+.dt .dt-controls .field{margin:0;min-width:0}
+.dt-muted{font-size:11px;line-height:1.5;color:#aeb7b3;overflow-wrap:anywhere}
+.dt-actions{display:flex;flex-wrap:wrap;gap:7px;margin:11px 0}
+.dt-actions button,.dt-import{border:1px solid #886d48;border-radius:9px;background:linear-gradient(#383931,#202721);color:#f4dba2;padding:9px 12px;font-size:11px;font-weight:700;cursor:pointer}
+.dt-import{position:relative;display:inline-flex;align-items:center}
+.dt-import input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.dt-card{border:1px solid #42493c;background:linear-gradient(155deg,#222926,#101816);border-radius:14px;margin:10px 0;overflow:hidden}
+.dt-card-head{width:100%;background:none;color:inherit;border:0;padding:10px;display:flex;align-items:center;gap:10px;text-align:left;min-height:85px}
+.dt-card-head:focus-visible,.dt-actions button:focus-visible,.dt-import:focus-within{outline:2px solid #baff7d;outline-offset:2px}
+.dt-name{display:grid;flex:1;min-width:0;gap:4px}
+.dt-name strong{font-size:13px;color:#f9f1df;overflow-wrap:anywhere}
+.dt-name small{font-size:10px;color:#bbc7bd}
+.dt-photo{width:68px;height:68px;flex-shrink:0;object-fit:cover;border:1px solid #75694b;border-radius:10px;background:#0a1412}
+.dt-ph-empty{display:grid;place-items:center;text-align:center;font-size:9px;color:#9a9486;line-height:1.5}
+.dt-food{max-width:90px;min-width:64px;text-align:center;padding:7px 5px;border-radius:6px;font-size:9px;font-weight:900;letter-spacing:.4px}
+.dt-food.urgent{background:#4b2320;color:#ffb2a2;border:1px solid #994b3a}
+.dt-food.watch{background:#453619;color:#ffe2a3;border:1px solid #8b6e39}
+.dt-food.good{background:#193d26;color:#baff9c;border:1px solid #3a7f4b}
+.dt-food.unknown{background:#2a3332;color:#b2c2bb;border:1px solid #536660}
+.dt-details{border-top:1px solid #3d483e;padding:13px;background:#111a17}
+.dt-details p{font-size:12px;line-height:1.5}
+.dt-details strong{color:#d5ffb6}
+.dt-spotlight{display:flex;gap:12px;align-items:flex-start}
+.dt-spotlight .dt-photo{width:106px;height:106px}
+.dt-spotlight b{color:#eccc93;font-size:15px}
+.dt-spotlight p{margin:6px 0}
+.dt-subtitle{border-bottom:1px solid #53613e;color:#e7d19f;margin:16px 0 10px;padding-bottom:6px;font-size:12px;letter-spacing:1px;font-weight:800}
+.dt-stats{display:grid;grid-template-columns:minmax(120px,1fr) 1fr;gap:8px;font-size:12px;line-height:1.3}
+.dt-stats dt{color:#b1bfad}.dt-stats dd{margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;color:#fff4df}
+.dt-progress{height:9px;border:1px solid #5b6d48;background:#1d2a20;border-radius:10px;overflow:hidden;margin-bottom:5px}
+.dt-progress span{display:block;height:100%;background:linear-gradient(90deg,#5ac765,#e5c06c)}
+.dt-warnings{border:1px solid #866140;background:#2b241a;padding:11px;border-radius:10px;color:#f5d6a1;font-size:12px;line-height:1.5}
+.dt-warnings ul{padding-left:20px;margin:8px 0}
+.dt-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.dt-form label{font-size:11px;color:#b8c9b5;display:grid;gap:4px;min-width:0}
+.dt-form label .field{margin:0;padding:10px;width:100%}
+.dt-form .dt-wide{grid-column:1/-1}
+.dt-form .primary{background:#b0f373;color:#132213}
+@media(max-width:480px){.dt-controls{grid-template-columns:1fr}.dt-name strong{font-size:12px}.dt-card-head{gap:7px}.dt-photo{width:56px;height:58px}.dt-summary small{font-size:8px}.dt-form{grid-template-columns:1fr}.dt-form .dt-wide{grid-column:1}.dt-stats{grid-template-columns:1fr 1fr}}
